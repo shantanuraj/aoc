@@ -24,11 +24,7 @@ fn solve(input: &str) -> i32 {
         let first_number = find_first_number(line).unwrap();
         let last_number = find_last_number(line).unwrap();
 
-        let num = format!("{}{}", first_number, last_number)
-            .parse::<i32>()
-            .unwrap();
-
-        total_sum += num;
+        total_sum += first_number * 10 + last_number;
     }
 
     total_sum
