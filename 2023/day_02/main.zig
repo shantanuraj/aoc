@@ -18,8 +18,8 @@ pub fn main() !void {
         .blue = 14,
     };
 
-    std.debug.print("input_01: {}\n", .{try solve("input_01.txt", budget)});
-    std.debug.print("input_02: {}\n", .{try solve("input_02.txt", budget)});
+    std.debug.print("input_01.txt -- {}\n", .{try solve("input_01.txt", budget)});
+    std.debug.print("input_02.txt -- {}\n", .{try solve("input_02.txt", budget)});
 }
 
 fn solve(path: []const u8, budget: Inventory) !Result {
