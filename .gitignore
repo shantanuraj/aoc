@@ -1,2 +1,5 @@
 # Rust binaries
 target/
+
+# Zig
+zig-cache/
