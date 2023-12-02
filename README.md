@@ -21,3 +21,4 @@ make
 ## Languages used
 
 - [Rust](https://www.rust-lang.org/)
+- [Zig](ziglang.org/)
