@@ -7,22 +7,22 @@ const Inventory = struct {
 };
 
 pub fn main() !void {
-    std.debug.print("input_01: {d}\n", .{try solve("input_01.txt")});
-    std.debug.print("input_02: {d}\n", .{try solve("input_02.txt")});
-}
-
-fn solve(path: []const u8) !u32 {
-    const file = try std.fs.cwd().openFile(
-        path,
-        .{},
-    );
-    defer file.close();
-
     const budget = Inventory{
         .red = 12,
         .green = 13,
         .blue = 14,
     };
+
+    std.debug.print("input_01: {d}\n", .{try solve("input_01.txt", budget)});
+    std.debug.print("input_02: {d}\n", .{try solve("input_02.txt", budget)});
+}
+
+fn solve(path: []const u8, budget: Inventory) !u32 {
+    const file = try std.fs.cwd().openFile(
+        path,
+        .{},
+    );
+    defer file.close();
 
     var buf_reader = std.io.bufferedReader(file.reader());
     var in_stream = buf_reader.reader();
@@ -81,7 +81,6 @@ fn process_line(line: []const u8, inventory: Inventory) bool {
         if (std.mem.endsWith(u8, color, ";")) {
             // Reset the budget for the next turn
             budget = inventory;
-            continue;
         }
     }
 
