@@ -22,3 +22,4 @@ make
 
 - [Rust](https://www.rust-lang.org/)
 - [Zig](https://ziglang.org/)
+- [Go](https://go.dev)
