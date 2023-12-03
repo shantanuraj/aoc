@@ -15,9 +15,13 @@ type Position struct {
 func main() {
 	fmt.Println("input_01.txt --", solve("input_01.txt"))
 	fmt.Println("input_02.txt --", solve("input_02.txt"))
+
+	fmt.Println("input_01.txt --", solve2("input_01.txt"))
+	fmt.Println("input_02.txt --", solve2("input_02.txt"))
+
 }
 
-func solve(filename string) int64 {
+func solve(filename string) uint64 {
 	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		panic(err)
@@ -25,7 +29,7 @@ func solve(filename string) int64 {
 	contents := string(bytes)
 
 	lines := strings.Split(contents, "\n")
-	sum := int64(0)
+	sum := uint64(0)
 	for i, line := range lines {
 		for j, char := range line {
 			if char == '.' {
@@ -72,7 +76,7 @@ func solve(filename string) int64 {
 					seenPositions[Position{pos.x, i}] = true
 				}
 
-				num, err := strconv.ParseInt(lines[pos.x][start:end+1], 10, 64)
+				num, err := strconv.ParseUint(lines[pos.x][start:end+1], 10, 64)
 				if err != nil {
 					panic(err)
 				}
@@ -106,4 +110,83 @@ func adjacent(x, y, lenX, lenY int) []Position {
 
 func inBounds(x, y, lenX, lenY int) bool {
 	return x >= 0 && x < lenX && y >= 0 && y < lenY
+}
+
+func solve2(filename string) uint64 {
+	bytes, err := os.ReadFile(filename)
+	if err != nil {
+		panic(err)
+	}
+	contents := string(bytes)
+
+	lines := strings.Split(contents, "\n")
+	sum := uint64(0)
+	for i, line := range lines {
+		for j, char := range line {
+			if char != '*' {
+				continue
+			}
+
+			nums := []uint64{}
+			product := uint64(1)
+			seenPositions := make(map[Position]bool)
+
+			// Find adjacent seats
+			for _, pos := range adjacent(i, j, len(lines), len(line)) {
+				// Skip if we've already seen this position
+				if seenPositions[pos] {
+					continue
+				}
+				seenPositions[pos] = true
+
+				adjacentChar := lines[pos.x][pos.y]
+
+				// Skip anything that isn't a number
+				if adjacentChar < '0' || adjacentChar > '9' {
+					continue
+				}
+
+				// More than 2 numbers means we can skip this `*`
+				if len(nums) == 2 {
+					nums = nil
+					product = 0
+					break
+				}
+
+				start := pos.y
+				end := pos.y
+				// Grow left till we encounter a non-number
+				for i := pos.y; i >= 0; i-- {
+					if lines[pos.x][i] < '0' || lines[pos.x][i] > '9' {
+						break
+					}
+					start = i
+					seenPositions[Position{pos.x, i}] = true
+				}
+				// Grow right till we encounter a non-number
+				for i := pos.y; i < len(line); i++ {
+					if lines[pos.x][i] < '0' || lines[pos.x][i] > '9' {
+						break
+					}
+					end = i
+					seenPositions[Position{pos.x, i}] = true
+				}
+
+				num, err := strconv.ParseUint(lines[pos.x][start:end+1], 10, 64)
+				if err != nil {
+					panic(err)
+				}
+
+				nums = append(nums, num)
+				product *= num
+			}
+
+			if len(nums) < 2 {
+				continue
+			}
+
+			sum += product
+		}
+	}
+	return sum
 }
