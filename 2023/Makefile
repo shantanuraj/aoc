@@ -1,6 +1,6 @@
-.PHONY: all day_01 day_02
+.PHONY: all day_01 day_02 day_03
 
-all: day_01 day_02
+all: day_01 day_02 day_03
 
 day_01:
 	@echo "\nDay 1: Trebuchet?!"
@@ -9,3 +9,7 @@ day_01:
 day_02:
 	@echo "\nDay 2: Cube Conundrum"
 	@(cd ./day_02/ && zig build run)
+
+day_03:
+	@echo "\nDay 3: Gear Ratios"
+	@(cd ./day_03 && go run main.go)
