@@ -6,11 +6,12 @@ let getTokens (line: string) =
 let getSum (line: string) =
     let line = line.[line.IndexOf(": ") + 2..]
 
-    let left = line.[..line.IndexOf("|") - 1] |> getTokens
-    let right = line.[line.IndexOf("|") + 2..] |> getTokens
+    let left = Set.ofArray (line.[..line.IndexOf("|") - 1] |> getTokens)
+    let right = Set.ofArray (line.[line.IndexOf("|") + 2..] |> getTokens)
 
     // Count how many numbers on the right are also on the left
-    let count = right |> Array.filter (fun n -> left |> Array.exists (fun m -> m = n)) |> Array.length
+    let count = Set.count (Set.intersect left right)
+
     pown 2 (count - 1)
 
 let solve (input: string) =
@@ -22,11 +23,11 @@ let cardCount (copies: int[]) =
         fun(line: string) ->
             let line = line.[line.IndexOf(": ") + 2..]
 
-            let left = line.[..line.IndexOf("|") - 1] |> getTokens
-            let right = line.[line.IndexOf("|") + 2..] |> getTokens
+            let left = Set.ofArray (line.[..line.IndexOf("|") - 1] |> getTokens)
+            let right = Set.ofArray (line.[line.IndexOf("|") + 2..] |> getTokens)
 
             // Count how many numbers on the right are also on the left
-            let count = right |> Array.filter (fun n -> left |> Array.exists (fun m -> m = n)) |> Array.length
+            let count = Set.count (Set.intersect left right)
 
             // For the next `count` elements, increment the number of copies by current line's number of copies
             for j in i + 1 .. i + count do
