@@ -71,17 +71,17 @@ fn processLine(line: []const u8, inventory: Inventory) bool {
 
         const color = iter.next() orelse break;
 
-        if (std.mem.startsWith(u8, color, "red")) {
+        if (color[0] == 'r') {
             if (budget.red < count) {
                 return false;
             }
             budget.red -= count;
-        } else if (std.mem.startsWith(u8, color, "green")) {
+        } else if (color[0] == 'g') {
             if (budget.green < count) {
                 return false;
             }
             budget.green -= count;
-        } else if (std.mem.startsWith(u8, color, "blue")) {
+        } else if (color[0] == 'b') {
             if (budget.blue < count) {
                 return false;
             }
@@ -90,7 +90,7 @@ fn processLine(line: []const u8, inventory: Inventory) bool {
             return false;
         }
 
-        if (std.mem.endsWith(u8, color, ";")) {
+        if (color[color.len - 1] == ';') {
             // Reset the budget for the next turn
             budget = inventory;
         }
@@ -123,18 +123,12 @@ fn calculateMinInventory(line: []const u8) Inventory {
 
         const color = iter.next() orelse break;
 
-        if (std.mem.eql(u8, color, "red")) {
+        if (color[0] == 'r') {
             budget.red = @max(budget.red, count);
-        } else if (std.mem.eql(u8, color, "green")) {
+        } else if (color[0] == 'g') {
             budget.green = @max(budget.green, count);
-        } else if (std.mem.eql(u8, color, "blue")) {
+        } else if (color[0] == 'b') {
             budget.blue = @max(budget.blue, count);
-        } else {
-            return Inventory{
-                .red = 0,
-                .green = 0,
-                .blue = 0,
-            };
         }
     }
 
