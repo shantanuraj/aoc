@@ -23,3 +23,9 @@ make
 - [Rust](https://www.rust-lang.org/)
 - [Zig](https://ziglang.org/)
 - [Go](https://go.dev)
+- [F#](https://fsharp.org/)
+
+## Tools used
+
+- I have the toolchains for `rust`, `zig` and `go` installed.
+- For most of the others I used [pkgx](https://pkgx.sh/) to run them on demand.
