@@ -1,6 +1,6 @@
-.PHONY: all day_01 day_02 day_03 day_04
+.PHONY: all day_01 day_02 day_03 day_04 day_05
 
-all: day_01 day_02 day_03 day_04
+all: day_01 day_02 day_03 day_04 day_05
 
 day_01:
 	@echo "\nDay 1: Trebuchet?!"
@@ -17,3 +17,7 @@ day_03:
 day_04:
 	@echo "\nDay 4: Scratchcards"
 	@(cd ./day_04 && pkgx dotnet fsi ./main.fsx)
+
+day_05:
+	@echo "\nDay 5: If You Give A Seed A Fertilizer"
+	@(cd ./day_05 && bun run main.ts)
