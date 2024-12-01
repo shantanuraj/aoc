@@ -1,3 +1,7 @@
+use std::collections::HashMap;
+
+type NumberPair = (i32, i32);
+
 fn main() {
     println!("\nPart 1");
     println!(
@@ -8,7 +12,6 @@ fn main() {
         "input_02.txt -- {}",
         solve_part_one(include_str!("../input_02.txt"))
     );
-
 
     println!("\nPart 2");
     println!(
@@ -21,70 +24,61 @@ fn main() {
     );
 }
 
-fn read_sorted_number_pairs(content: &str) -> (Vec<i32>, Vec<i32>) {
-    let mut first_numbers = Vec::new();
-    let mut second_numbers = Vec::new();
-
-    for line in content.lines() {
-        if let Some((first, second)) = line.split_whitespace().collect::<Vec<&str>>().split_first()
-        {
-            if let (Ok(num1), Some(Ok(num2))) = (
-                first.parse::<i32>(),
-                second.first().map(|s| s.parse::<i32>()),
-            ) {
-                first_numbers.push(num1);
-                second_numbers.push(num2);
+fn read_number_pairs(
+    content: &str,
+    sort: bool,
+) -> Result<Vec<NumberPair>, Box<dyn std::error::Error>> {
+    let mut pairs: Vec<NumberPair> = content
+        .lines()
+        .filter_map(|line| {
+            let mut iter = line.split_whitespace();
+            match (iter.next(), iter.next()) {
+                (Some(first), Some(second)) => first
+                    .parse::<i32>()
+                    .ok()
+                    .and_then(|n1| second.parse::<i32>().ok().map(|n2| (n1, n2))),
+                _ => None,
             }
-        }
+        })
+        .collect();
+
+    if sort {
+        let (mut n1, mut n2): (Vec<i32>, Vec<i32>) = pairs.iter().cloned().unzip();
+
+        n1.sort_unstable();
+        n2.sort_unstable();
+
+        pairs = n1.iter().zip(n2.iter()).map(|(&n1, &n2)| (n1, n2)).collect();
     }
 
-    first_numbers.sort();
-    second_numbers.sort();
-
-    (first_numbers, second_numbers)
+    Ok(pairs)
 }
 
 fn solve_part_one(input: &str) -> i32 {
-    let mut sum: i32 = 0;
-    let (p1, p2) = read_sorted_number_pairs(input);
-    for (_, (n1, n2)) in p1.iter().zip(p2.iter()).enumerate() {
-        sum += (n1 - n2).abs();
-    }
-    sum
-}
-
-fn read_number_pairs(content: &str) -> (Vec<i32>, Vec<i32>) {
-    let mut first_numbers = Vec::new();
-    let mut second_numbers = Vec::new();
-
-    for line in content.lines() {
-        if let Some((first, second)) = line.split_whitespace().collect::<Vec<&str>>().split_first()
-        {
-            if let (Ok(num1), Some(Ok(num2))) = (
-                first.parse::<i32>(),
-                second.first().map(|s| s.parse::<i32>()),
-            ) {
-                first_numbers.push(num1);
-                second_numbers.push(num2);
-            }
-        }
-    }
-
-    (first_numbers, second_numbers)
+    read_number_pairs(input, true)
+        .map(|pairs| pairs.iter().map(|(n1, n2)| (n1 - n2).abs()).sum())
+        .unwrap_or(0)
 }
 
 fn solve_part_two(input: &str) -> i32 {
-    let mut sum: i32 = 0;
-    let (p1, p2) = read_number_pairs(input);
+    let pairs = match read_number_pairs(input, false) {
+        Ok(p) => p,
+        Err(_) => return 0,
+    };
 
-    let mut freq_map = std::collections::HashMap::new();
-    for n in p2.iter() {
-        let count = freq_map.entry(n).or_insert(0);
-        *count += 1;
-    }
+    let freq_map: HashMap<i32, i32> = pairs
+        .iter()
+        .map(|(_, n2)| *n2)
+        .fold(HashMap::new(), |mut acc, n| {
+            *acc.entry(n).or_insert(0) += 1;
+            acc
+        });
 
-    for n in p1.iter() {
-        sum += n * freq_map.get(&n).unwrap_or(&0);
-    }
-    sum
+    pairs
+        .iter()
+        .map(|(n1, _)| {
+            let frequency = freq_map.get(n1).unwrap_or(&0);
+            n1 * frequency
+        })
+        .sum()
 }
