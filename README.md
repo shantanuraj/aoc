@@ -1,4 +1,4 @@
-# advent-of-code 2023
+# advent-of-code
 
 Let's hope I make it past day 1 this time.
 

@@ -1,6 +1,9 @@
-.PHONY: all 2023
+.PHONY: all 2023 2024
 
-all: 2023
+all: 2023 2024
 
 2023:
 	@make -C 2023
+
+2024:
+	@make -C 2024
