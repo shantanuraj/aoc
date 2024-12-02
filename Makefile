@@ -7,3 +7,7 @@ all: 2023 2024
 
 2024:
 	@make -C 2024
+
+.PHONY: today
+today:
+	@./today.sh
